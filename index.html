@@ -3,114 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friends Spot | Pro</title>
+    <title>Friends Spot | Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.3); }
         .blue-tick { color: #0095f6; }
-        .gradient-border { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
-        #voice-anim { display: none; }
-        .recording-pulse { animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        .nav-blur { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        .post-card { transition: transform 0.3s ease; }
+        .post-card:hover { transform: translateY(-5px); }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="font-sans text-gray-900">
 
-    <div id="login-screen" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
-        <h1 class="text-5xl font-bold mb-8 italic bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-500">Friends Spot</h1>
-        <div class="w-80 space-y-4 shadow-xl p-8 rounded-2xl border">
-            <input id="user-input" type="text" placeholder="Username" class="w-full border p-3 rounded-lg bg-gray-50 outline-none">
-            <input id="pass-input" type="password" placeholder="Password" class="w-full border p-3 rounded-lg bg-gray-50 outline-none">
-            <button onclick="login()" class="w-full bg-blue-500 text-white font-bold py-3 rounded-lg hover:bg-blue-600 shadow-md">Enter Spot</button>
-            <p class="text-xs text-center text-gray-400">Admin: huzaifa23 | Pass: huzaifa23</p>
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center p-6">
+        <div class="glass w-full max-w-md p-10 rounded-3xl shadow-2xl text-center">
+            <h1 class="text-4xl font-extrabold mb-2 tracking-tighter italic">Friends Spot</h1>
+            <p class="text-gray-500 mb-8 uppercase text-xs tracking-widest font-bold">Connect & Share</p>
+            <div class="space-y-4">
+                <input id="user-input" type="text" placeholder="Username" class="w-full p-4 rounded-xl bg-white/50 border-none outline-none focus:ring-2 ring-blue-400">
+                <input id="pass-input" type="password" placeholder="Password" class="w-full p-4 rounded-xl bg-white/50 border-none outline-none focus:ring-2 ring-blue-400">
+                <button onclick="login()" class="w-full bg-black text-white font-bold py-4 rounded-xl hover:bg-gray-800 transition shadow-lg">Enter the Spot</button>
+            </div>
+            <p class="mt-6 text-[10px] text-gray-400 uppercase tracking-widest">Admin: huzaifa23 | Pass: huzaifa23</p>
         </div>
     </div>
 
     <div id="main-app" class="hidden">
-        <nav class="fixed top-0 w-full border-b bg-white z-40 px-6 py-3 flex justify-between items-center shadow-sm">
-            <h2 class="text-2xl font-bold italic">Friends Spot</h2>
-            <div class="flex items-center space-x-6 text-xl">
-                <i class="fas fa-home hover:text-blue-500 cursor-pointer"></i>
-                <i class="fas fa-plus-circle hover:text-green-500 cursor-pointer" onclick="openPostModal()"></i>
-                <i class="fas fa-microphone hover:text-red-500 cursor-pointer" onclick="toggleVoice()"></i>
-                <i id="admin-icon" class="fas fa-user-shield text-red-600 hidden cursor-pointer" onclick="toggleAdmin()"></i>
-                <img src="https://ui-avatars.com/api/?name=Huzaifa&background=random" class="w-8 h-8 rounded-full border">
+        <nav class="fixed top-0 w-full nav-blur z-40 px-8 py-4 flex justify-between items-center border-b border-white/20">
+            <h2 class="text-2xl font-black italic tracking-tighter">FS.</h2>
+            <div class="flex items-center space-x-8 text-xl">
+                <i class="fas fa-home cursor-pointer"></i>
+                <i class="fas fa-plus-circle cursor-pointer" onclick="openPostModal()"></i>
+                <i class="fas fa-microphone text-blue-500 cursor-pointer" onclick="toggleVoice()"></i>
+                <i id="admin-icon" class="fas fa-shield-alt text-red-500 hidden cursor-pointer" onclick="toggleAdmin()"></i>
+                <div class="w-10 h-10 rounded-full bg-black flex items-center justify-center text-white text-xs font-bold">H</div>
             </div>
         </nav>
 
-        <div id="voice-anim" class="fixed top-20 left-1/2 -translate-x-1/2 bg-red-500 text-white px-6 py-2 rounded-full shadow-lg z-50 recording-pulse">
-            <i class="fas fa-microphone mr-2"></i> Recording Voice Note...
-        </div>
-
-        <main id="feed" class="max-w-lg mx-auto mt-24 pb-20">
-            <div class="bg-white border rounded-xl mb-6 shadow-sm overflow-hidden">
-                <div class="flex items-center p-4">
-                    <div class="w-10 h-10 rounded-full gradient-border p-0.5">
-                        <img src="https://ui-avatars.com/api/?name=Huzaifa" class="rounded-full border-2 border-white">
+        <main id="feed" class="max-w-xl mx-auto mt-28 pb-20 px-4">
+            <div class="glass post-card rounded-[32px] mb-8 overflow-hidden shadow-xl">
+                <div class="flex items-center p-6">
+                    <img src="https://ui-avatars.com/api/?name=Huzaifa&background=000&color=fff" class="w-12 h-12 rounded-full shadow-md">
+                    <div class="ml-4">
+                        <p class="font-bold flex items-center text-lg">huzaifa23 <i class="fas fa-check-circle blue-tick ml-1 text-sm"></i></p>
+                        <p class="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Administrator</p>
                     </div>
-                    <span class="ml-3 font-bold flex items-center">huzaifa23 <i class="fas fa-check-circle blue-tick ml-1"></i></span>
                 </div>
-                <div class="p-4 pt-0">
-                    <p class="text-gray-800">Welcome to **Friends Spot**! The world is yours. 🚀</p>
+                <div class="px-8 pb-8">
+                    <h3 class="text-2xl font-bold mb-2">The New Era of Friends Spot 🚀</h3>
+                    <p class="text-gray-600 leading-relaxed">We've updated the UI to match our new premium aesthetic. Clean, fast, and exclusive.</p>
                 </div>
-                <div class="border-t p-3 flex space-x-4 text-xl text-gray-600">
-                    <i class="far fa-heart hover:text-red-500 cursor-pointer"></i>
+                <div class="bg-white/30 p-4 flex justify-around text-gray-500 border-t border-white/20">
+                    <i class="far fa-heart hover:text-red-500 cursor-pointer transition"></i>
                     <i class="far fa-comment"></i>
-                    <i class="fas fa-share"></i>
+                    <i class="fas fa-share-alt"></i>
                 </div>
             </div>
         </main>
     </div>
 
-    <div id="admin-panel" class="fixed inset-0 bg-black/80 z-[60] hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-2xl p-8 relative">
-            <button onclick="toggleAdmin()" class="absolute top-4 right-4 text-3xl">&times;</button>
-            <h3 class="text-2xl font-black text-red-600 mb-6 uppercase tracking-widest">Admin Control</h3>
-            <div class="space-y-6">
+    <div id="admin-panel" class="fixed inset-0 bg-black/60 backdrop-blur-md z-[60] hidden flex items-center justify-center p-6">
+        <div class="bg-white w-full max-w-sm rounded-[40px] p-10 relative shadow-2xl">
+            <button onclick="toggleAdmin()" class="absolute top-6 right-8 text-3xl font-light">&times;</button>
+            <h3 class="text-xl font-black mb-8 border-b pb-4 tracking-tighter">ADMIN COMMAND</h3>
+            
+            <div class="space-y-8">
                 <div>
-                    <label class="block text-sm font-bold mb-2">Manage Blue Tick (Verified)</label>
-                    <div class="flex gap-2">
-                        <input id="tick-target" type="text" placeholder="Username" class="border p-2 flex-1 rounded-lg">
-                        <button onclick="adminAction('Tick Updated')" class="bg-blue-600 text-white px-4 rounded-lg">Apply</button>
-                    </div>
+                    <p class="text-[10px] font-bold uppercase tracking-widest mb-3 text-gray-400">Verification</p>
+                    <input id="tick-target" type="text" placeholder="Username" class="w-full border-b p-2 outline-none mb-2 font-bold">
+                    <button onclick="alert('Verified!')" class="text-blue-500 font-bold text-sm">GIVE BLUE TICK</button>
                 </div>
                 <div>
-                    <label class="block text-sm font-bold mb-2 text-red-500">Remove User / Ban</label>
-                    <div class="flex gap-2">
-                        <input id="ban-target" type="text" placeholder="Username" class="border p-2 flex-1 rounded-lg">
-                        <button onclick="adminAction('User Removed')" class="bg-red-600 text-white px-4 rounded-lg">Delete</button>
-                    </div>
+                    <p class="text-[10px] font-bold uppercase tracking-widest mb-3 text-red-400">Management</p>
+                    <input id="ban-target" type="text" placeholder="Username" class="w-full border-b p-2 outline-none mb-2 font-bold">
+                    <button onclick="alert('User Removed')" class="text-red-500 font-bold text-sm">REMOVE USER</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let isAdmin = false;
         function login() {
-            const user = document.getElementById('user-input').value;
-            const pass = document.getElementById('pass-input').value;
-            if (user === 'huzaifa23' && pass === 'huzaifa23') {
-                isAdmin = true;
+            const u = document.getElementById('user-input').value;
+            const p = document.getElementById('pass-input').value;
+            if (u === 'huzaifa23' && p === 'huzaifa23') {
                 document.getElementById('admin-icon').classList.remove('hidden');
             }
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
         }
         function toggleAdmin() { document.getElementById('admin-panel').classList.toggle('hidden'); }
-        function toggleVoice() {
-            const v = document.getElementById('voice-anim');
-            v.style.display = (v.style.display === 'block') ? 'none' : 'block';
-        }
-        function adminAction(msg) { alert("ADMIN POWER: " + msg); }
+        function toggleVoice() { alert("Voice Recording Started..."); }
         function openPostModal() {
-            const text = prompt("What's on your mind?");
-            if (text) {
-                const feed = document.getElementById('feed');
-                const post = `<div class="bg-white border rounded-xl mb-6 shadow-sm overflow-hidden"><div class="flex items-center p-4"><img src="https://ui-avatars.com/api/?name=User" class="w-10 h-10 rounded-full"><span class="ml-3 font-bold">New Post</span></div><div class="p-4 pt-0 text-gray-800">${text}</div></div>`;
-                feed.insertAdjacentHTML('afterbegin', post);
+            const t = prompt("What's on your mind?");
+            if(t) {
+                const post = `<div class="glass post-card rounded-[32px] mb-8 overflow-hidden shadow-xl p-8"><p class="font-bold mb-2">New Update</p><p class="text-gray-600">${t}</p></div>`;
+                document.getElementById('feed').insertAdjacentHTML('afterbegin', post);
             }
         }
     </script>
 </body>
 </html>
+              
