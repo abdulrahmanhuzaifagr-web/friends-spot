@@ -7,80 +7,102 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; }
-        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.3); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            min-height: 100vh;
+        }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.4); }
+        .glass-dark { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); }
+        .active-tab { color: #000; transform: translateY(-5px); font-weight: 900; }
+        .screen { display: none; animation: fadeIn 0.4s ease-out; }
+        .screen-active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .blue-tick { color: #0095f6; }
-        .nav-blur { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
-        .post-card { transition: transform 0.3s ease; }
-        .post-card:hover { transform: translateY(-5px); }
     </style>
 </head>
-<body class="font-sans text-gray-900">
+<body class="text-slate-900">
 
-    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center p-6">
-        <div class="glass w-full max-w-md p-10 rounded-3xl shadow-2xl text-center">
-            <h1 class="text-4xl font-extrabold mb-2 tracking-tighter italic">Friends Spot</h1>
-            <p class="text-gray-500 mb-8 uppercase text-xs tracking-widest font-bold">Connect & Share</p>
+    <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-white/40 backdrop-blur-md p-6">
+        <div class="glass w-full max-w-sm p-10 rounded-[40px] shadow-2xl text-center">
+            <h1 class="text-4xl font-black italic tracking-tighter mb-2">Friends Spot</h1>
+            <p class="text-[10px] tracking-[0.3em] font-bold text-slate-400 uppercase mb-8">Premium Network</p>
             <div class="space-y-4">
-                <input id="user-input" type="text" placeholder="Username" class="w-full p-4 rounded-xl bg-white/50 border-none outline-none focus:ring-2 ring-blue-400">
-                <input id="pass-input" type="password" placeholder="Password" class="w-full p-4 rounded-xl bg-white/50 border-none outline-none focus:ring-2 ring-blue-400">
-                <button onclick="login()" class="w-full bg-black text-white font-bold py-4 rounded-xl hover:bg-gray-800 transition shadow-lg">Enter the Spot</button>
+                <input id="user-input" type="text" placeholder="Username" class="w-full p-4 rounded-2xl bg-white/50 border-none outline-none focus:ring-2 ring-white shadow-inner">
+                <input id="pass-input" type="password" placeholder="Password" class="w-full p-4 rounded-2xl bg-white/50 border-none outline-none focus:ring-2 ring-white shadow-inner">
+                <button onclick="login()" class="w-full bg-black text-white font-bold py-4 rounded-2xl hover:scale-[1.02] transition shadow-xl mt-4">Enter Spot</button>
             </div>
-            <p class="mt-6 text-[10px] text-gray-400 uppercase tracking-widest">Admin: huzaifa23 | Pass: huzaifa23</p>
         </div>
     </div>
 
-    <div id="main-app" class="hidden">
-        <nav class="fixed top-0 w-full nav-blur z-40 px-8 py-4 flex justify-between items-center border-b border-white/20">
-            <h2 class="text-2xl font-black italic tracking-tighter">FS.</h2>
-            <div class="flex items-center space-x-8 text-xl">
-                <i class="fas fa-home cursor-pointer"></i>
-                <i class="fas fa-plus-circle cursor-pointer" onclick="openPostModal()"></i>
-                <i class="fas fa-microphone text-blue-500 cursor-pointer" onclick="toggleVoice()"></i>
+    <div id="main-app" class="hidden min-h-screen flex flex-col">
+        
+        <nav class="fixed top-0 w-full glass z-40 px-8 py-5 flex justify-between items-center">
+            <h2 id="page-title" class="text-xl font-black italic tracking-tighter">FS.</h2>
+            <div class="flex items-center space-x-6">
                 <i id="admin-icon" class="fas fa-shield-alt text-red-500 hidden cursor-pointer" onclick="toggleAdmin()"></i>
-                <div class="w-10 h-10 rounded-full bg-black flex items-center justify-center text-white text-xs font-bold">H</div>
+                <div class="w-8 h-8 rounded-full bg-black flex items-center justify-center text-[10px] text-white font-bold">H</div>
             </div>
         </nav>
 
-        <main id="feed" class="max-w-xl mx-auto mt-28 pb-20 px-4">
-            <div class="glass post-card rounded-[32px] mb-8 overflow-hidden shadow-xl">
-                <div class="flex items-center p-6">
-                    <img src="https://ui-avatars.com/api/?name=Huzaifa&background=000&color=fff" class="w-12 h-12 rounded-full shadow-md">
-                    <div class="ml-4">
-                        <p class="font-bold flex items-center text-lg">huzaifa23 <i class="fas fa-check-circle blue-tick ml-1 text-sm"></i></p>
-                        <p class="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Administrator</p>
+        <main id="screen-feed" class="screen screen-active mt-28 px-6 pb-32 max-w-xl mx-auto w-full">
+            <div class="glass rounded-[35px] overflow-hidden mb-8 shadow-lg">
+                <div class="p-6 flex items-center">
+                    <img src="https://ui-avatars.com/api/?name=Huzaifa&background=000&color=fff" class="w-10 h-10 rounded-full">
+                    <span class="ml-3 font-bold text-sm">huzaifa23 <i class="fas fa-check-circle blue-tick"></i></span>
+                </div>
+                <div class="px-6 pb-8">
+                    <div class="w-full h-64 bg-slate-200 rounded-[25px] mb-4 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&w=800" class="w-full h-full object-cover opacity-80">
                     </div>
-                </div>
-                <div class="px-8 pb-8">
-                    <h3 class="text-2xl font-bold mb-2">The New Era of Friends Spot 🚀</h3>
-                    <p class="text-gray-600 leading-relaxed">We've updated the UI to match our new premium aesthetic. Clean, fast, and exclusive.</p>
-                </div>
-                <div class="bg-white/30 p-4 flex justify-around text-gray-500 border-t border-white/20">
-                    <i class="far fa-heart hover:text-red-500 cursor-pointer transition"></i>
-                    <i class="far fa-comment"></i>
-                    <i class="fas fa-share-alt"></i>
+                    <p class="text-sm leading-relaxed text-slate-600">The new Canva-style update is live! Check out the smooth glass effects on the chat and profile screens.</p>
                 </div>
             </div>
         </main>
-    </div>
 
-    <div id="admin-panel" class="fixed inset-0 bg-black/60 backdrop-blur-md z-[60] hidden flex items-center justify-center p-6">
-        <div class="bg-white w-full max-w-sm rounded-[40px] p-10 relative shadow-2xl">
-            <button onclick="toggleAdmin()" class="absolute top-6 right-8 text-3xl font-light">&times;</button>
-            <h3 class="text-xl font-black mb-8 border-b pb-4 tracking-tighter">ADMIN COMMAND</h3>
-            
-            <div class="space-y-8">
-                <div>
-                    <p class="text-[10px] font-bold uppercase tracking-widest mb-3 text-gray-400">Verification</p>
-                    <input id="tick-target" type="text" placeholder="Username" class="w-full border-b p-2 outline-none mb-2 font-bold">
-                    <button onclick="alert('Verified!')" class="text-blue-500 font-bold text-sm">GIVE BLUE TICK</button>
-                </div>
-                <div>
-                    <p class="text-[10px] font-bold uppercase tracking-widest mb-3 text-red-400">Management</p>
-                    <input id="ban-target" type="text" placeholder="Username" class="w-full border-b p-2 outline-none mb-2 font-bold">
-                    <button onclick="alert('User Removed')" class="text-red-500 font-bold text-sm">REMOVE USER</button>
+        <main id="screen-chat" class="screen mt-28 px-6 pb-32 max-w-xl mx-auto w-full flex flex-col h-[70vh]">
+            <div id="chat-messages" class="flex-1 overflow-y-auto space-y-4 pr-2">
+                <div class="flex justify-start">
+                    <div class="glass p-4 rounded-[25px] rounded-tl-none text-sm max-w-[80%] shadow-sm">
+                        Welcome to the Global Chat, <b><span id="welcome-user"></span></b>!
+                    </div>
                 </div>
             </div>
+            <div class="mt-4 flex items-center gap-2">
+                <input id="chat-input" type="text" placeholder="Type a message..." class="glass flex-1 p-4 rounded-full outline-none text-sm shadow-sm">
+                <button onclick="sendMsg()" class="w-12 h-12 glass rounded-full flex items-center justify-center text-blue-500 shadow-sm"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </main>
+
+        <main id="screen-profile" class="screen mt-28 px-6 pb-32 max-w-xl mx-auto w-full text-center">
+            <div class="glass p-10 rounded-[40px] shadow-xl">
+                <div class="w-24 h-24 rounded-full mx-auto p-1 bg-gradient-to-tr from-blue-400 to-purple-500 mb-6">
+                    <img src="https://ui-avatars.com/api/?name=User&background=fff" id="profile-pic" class="rounded-full border-4 border-white w-full h-full">
+                </div>
+                <h3 id="display-name" class="text-2xl font-black">User</h3>
+                <p id="display-bio" class="text-xs text-slate-400 mt-2 uppercase tracking-widest">Member</p>
+                <div class="flex justify-center gap-10 mt-10 border-t border-white/30 pt-8">
+                    <div><p class="font-black">0</p><p class="text-[10px] text-slate-400 uppercase">Posts</p></div>
+                    <div><p class="font-black">1.2k</p><p class="text-[10px] text-slate-400 uppercase">Friends</p></div>
+                </div>
+                <button onclick="location.reload()" class="mt-10 text-red-400 font-bold text-xs uppercase tracking-widest">Logout</button>
+            </div>
+        </main>
+
+        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-sm glass rounded-full p-4 flex justify-around items-center shadow-2xl z-50">
+            <i onclick="showScreen('feed')" id="tab-feed" class="fas fa-th-large text-xl cursor-pointer transition-all active-tab"></i>
+            <i onclick="showScreen('chat')" id="tab-chat" class="fas fa-comment-alt text-xl cursor-pointer text-slate-300 transition-all"></i>
+            <i onclick="showScreen('profile')" id="tab-profile" class="fas fa-user-circle text-xl cursor-pointer text-slate-300 transition-all"></i>
+        </nav>
+    </div>
+
+    <div id="admin-panel" class="fixed inset-0 bg-black/40 backdrop-blur-lg z-[200] hidden flex items-center justify-center p-6">
+        <div class="bg-white w-full max-w-xs rounded-[40px] p-10 shadow-2xl text-center">
+            <h3 class="font-black text-red-500 mb-8 uppercase tracking-widest text-sm">Admin Power</h3>
+            <button onclick="alert('Tick Applied!')" class="w-full py-4 border-b text-sm font-bold">VERIFY USER</button>
+            <button onclick="document.getElementById('chat-messages').innerHTML=''" class="w-full py-4 text-sm font-bold text-red-500">CLEAR CHAT</button>
+            <button onclick="toggleAdmin()" class="mt-6 text-slate-400 text-xs uppercase">Close</button>
         </div>
     </div>
 
@@ -88,22 +110,42 @@
         function login() {
             const u = document.getElementById('user-input').value;
             const p = document.getElementById('pass-input').value;
-            if (u === 'huzaifa23' && p === 'huzaifa23') {
+            if(!u) return;
+
+            document.getElementById('display-name').innerText = u;
+            document.getElementById('welcome-user').innerText = u;
+            document.getElementById('profile-pic').src = `https://ui-avatars.com/api/?name=${u}&background=000&color=fff`;
+
+            if(u === 'huzaifa23' && p === 'huzaifa23') {
                 document.getElementById('admin-icon').classList.remove('hidden');
+                document.getElementById('display-bio').innerHTML = "Founder & Admin <i class='fas fa-check-circle blue-tick'></i>";
             }
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('main-app').classList.remove('hidden');
+
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'flex';
         }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('screen-active'));
+            document.querySelectorAll('nav i').forEach(i => i.classList.remove('active-tab', 'text-slate-300'));
+            document.querySelectorAll('nav i').forEach(i => i.classList.add('text-slate-300'));
+
+            document.getElementById('screen-' + id).classList.add('screen-active');
+            document.getElementById('tab-' + id).classList.add('active-tab');
+            document.getElementById('tab-' + id).classList.remove('text-slate-300');
+            document.getElementById('page-title').innerText = id === 'feed' ? 'FS.' : id.toUpperCase();
+        }
+
+        function sendMsg() {
+            const inp = document.getElementById('chat-input');
+            if(!inp.value) return;
+            const chat = document.getElementById('chat-messages');
+            chat.innerHTML += `<div class="flex justify-end"><div class="glass bg-black text-white p-4 rounded-[25px] rounded-tr-none text-sm max-w-[80%] shadow-md">${inp.value}</div></div>`;
+            inp.value = "";
+            chat.scrollTop = chat.scrollHeight;
+        }
+
         function toggleAdmin() { document.getElementById('admin-panel').classList.toggle('hidden'); }
-        function toggleVoice() { alert("Voice Recording Started..."); }
-        function openPostModal() {
-            const t = prompt("What's on your mind?");
-            if(t) {
-                const post = `<div class="glass post-card rounded-[32px] mb-8 overflow-hidden shadow-xl p-8"><p class="font-bold mb-2">New Update</p><p class="text-gray-600">${t}</p></div>`;
-                document.getElementById('feed').insertAdjacentHTML('afterbegin', post);
-            }
-        }
     </script>
 </body>
 </html>
-              
