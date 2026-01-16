@@ -3,57 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friends Spot | Live</title>
+    <title>Friends Spot | Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f1f5f9; }
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.5); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.5); }
         .screen { display: none; }
-        .active-screen { display: block; animation: slideUp 0.3s ease; }
+        .active-screen { display: block; animation: fadeIn 0.3s ease; }
         .nav-active { color: #000; transform: scale(1.1); font-weight: 800; }
-        .msg-bubble { padding: 12px 16px; border-radius: 20px; font-size: 14px; max-width: 85%; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .msg-bubble { padding: 12px 18px; border-radius: 24px; font-size: 14px; max-width: 80%; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body>
+<body class="text-slate-900">
 
-    <div id="login-screen" class="fixed inset-0 z-[100] bg-white flex items-center justify-center p-6 text-center">
-        <div class="w-full max-w-sm">
-            <h1 class="text-4xl font-black italic mb-2">Friends Spot</h1>
-            <p class="text-[10px] tracking-widest text-slate-400 font-bold mb-8 uppercase">Live Global Connection</p>
-            <input id="user-input" type="text" placeholder="Username" class="w-full p-4 rounded-2xl bg-slate-100 mb-4 outline-none border-2 border-transparent focus:border-blue-400">
-            <input id="pass-input" type="password" placeholder="Password (Optional)" class="w-full p-4 rounded-2xl bg-slate-100 mb-6 outline-none">
-            <button onclick="connectLive()" class="w-full bg-black text-white font-bold py-4 rounded-2xl shadow-xl active:scale-95 transition">Enter Live Chat</button>
+    <div id="login-screen" class="fixed inset-0 z-[100] bg-white flex items-center justify-center p-6">
+        <div class="w-full max-w-sm text-center">
+            <h1 class="text-5xl font-black italic mb-2 tracking-tighter">Friends Spot</h1>
+            <p id="auth-subtitle" class="text-[10px] tracking-widest text-slate-400 font-bold mb-10 uppercase">Global Access</p>
+            
+            <div class="space-y-4">
+                <input id="user-input" type="text" placeholder="Username" class="w-full p-4 rounded-2xl bg-slate-100 outline-none border-2 border-transparent focus:border-black transition">
+                <input id="pass-input" type="password" placeholder="Password (Optional for Guests)" class="w-full p-4 rounded-2xl bg-slate-100 outline-none border-2 border-transparent focus:border-black transition">
+                <button onclick="initLive()" class="w-full bg-black text-white font-bold py-4 rounded-2xl shadow-xl active:scale-95 transition">Enter Site</button>
+                <p class="text-xs text-slate-500 mt-4">New here? <span class="text-blue-500 font-bold cursor-pointer" onclick="alert('Just enter a name to Sign Up!')">Sign Up Now</span></p>
+            </div>
         </div>
     </div>
 
     <div id="main-app" class="hidden flex flex-col min-h-screen">
-        <nav class="fixed top-0 w-full glass z-40 px-6 py-5 flex justify-between items-center">
+        <nav class="fixed top-0 w-full glass z-40 px-8 py-5 flex justify-between items-center border-b">
             <h2 id="header-label" class="text-xl font-black italic">FS.</h2>
-            <div id="admin-tick" class="hidden text-blue-500"><i class="fas fa-check-circle"></i> ADMIN</div>
+            <i id="admin-icon" class="fas fa-user-shield text-red-500 hidden cursor-pointer text-xl" onclick="toggleAdmin()"></i>
         </nav>
 
         <main id="screen-chat" class="screen active-screen mt-24 px-6 pb-32 max-w-lg mx-auto w-full flex flex-col h-[78vh]">
             <div id="chat-display" class="flex-1 overflow-y-auto space-y-4 p-2 scroll-smooth">
-                <div class="flex justify-start"><div class="msg-bubble bg-white text-slate-500 italic text-xs">Connecting to global server...</div></div>
+                <div class="flex justify-start"><div class="msg-bubble bg-white text-slate-400 italic text-xs">Connecting to Global Feed...</div></div>
             </div>
             <div class="mt-4 flex gap-2">
-                <input id="chat-input" type="text" placeholder="Type a message..." class="flex-1 p-4 rounded-full glass outline-none shadow-md text-sm">
-                <button onclick="publishMsg()" class="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center"><i class="fas fa-paper-plane"></i></button>
+                <input id="chat-input" type="text" placeholder="Message..." class="flex-1 p-4 rounded-full glass outline-none shadow-md text-sm border focus:border-black">
+                <button onclick="send()" class="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center shadow-lg"><i class="fas fa-paper-plane"></i></button>
             </div>
         </main>
 
         <main id="screen-profile" class="screen mt-24 px-6 pb-32 max-w-lg mx-auto w-full text-center">
             <div class="glass p-10 rounded-[40px] shadow-xl">
-                <img id="p-img" src="https://ui-avatars.com/api/?name=User" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-white shadow-md object-cover">
-                <input id="edit-name" type="text" value="Username" class="text-2xl font-black text-center w-full bg-transparent outline-none mb-1">
-                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-8">Live Member</p>
-                <button onclick="location.reload()" class="w-full bg-slate-100 text-slate-600 font-bold py-3 rounded-2xl mb-4">Logout</button>
+                <div class="relative w-28 h-28 mx-auto mb-6">
+                    <img id="p-img" src="https://ui-avatars.com/api/?name=User" class="w-full h-full rounded-full object-cover border-4 border-white shadow-md">
+                    <label class="absolute bottom-0 right-0 bg-black text-white w-8 h-8 rounded-full flex items-center justify-center cursor-pointer border-2 border-white">
+                        <i class="fas fa-camera text-[10px]"></i>
+                        <input type="file" id="pfp-upload" class="hidden" accept="image/*" onchange="uploadImg(event)">
+                    </label>
+                </div>
+                <h3 id="p-name" class="text-2xl font-black">Username</h3>
+                <p id="p-status" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Live Member</p>
+                <div class="flex justify-around mt-8 border-t pt-8 mb-6">
+                    <div><p class="font-black text-lg">0</p><p class="text-[10px] text-slate-400 uppercase">Posts</p></div>
+                    <div><p class="font-black text-lg text-green-500">Live</p><p class="text-[10px] text-slate-400 uppercase">Status</p></div>
+                </div>
+                <button onclick="location.reload()" class="text-red-500 font-bold text-xs uppercase tracking-widest">Sign Out</button>
             </div>
         </main>
+
+        <div id="admin-panel" class="fixed inset-0 z-[110] bg-black/60 backdrop-blur-md hidden flex items-center justify-center p-6">
+            <div class="bg-white w-full max-w-xs rounded-[40px] p-8 text-center shadow-2xl">
+                <h3 class="font-black text-red-500 mb-6 uppercase tracking-widest">Admin Control</h3>
+                <button onclick="clearChatServer()" class="w-full bg-slate-100 p-4 rounded-2xl font-bold mb-3 text-sm">Clear All Messages</button>
+                <button onclick="alert('All users verified!')" class="w-full bg-blue-500 text-white p-4 rounded-2xl font-bold mb-6 text-sm">Verify Everyone</button>
+                <p onclick="toggleAdmin()" class="text-slate-400 text-xs font-bold cursor-pointer uppercase">Close Panel</p>
+            </div>
+        </div>
 
         <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-xs glass rounded-full p-4 flex justify-around items-center shadow-2xl z-50">
             <i onclick="tab('chat')" id="n-chat" class="fas fa-comment text-xl cursor-pointer nav-active"></i>
@@ -62,66 +85,57 @@
     </div>
 
     <script>
-        let myUser = "Guest";
+        let myName = "";
         let pubnub;
 
-        function connectLive() {
-            myUser = document.getElementById('user-input').value || "Guest";
+        function initLive() {
+            myName = document.getElementById('user-input').value;
             const pass = document.getElementById('pass-input').value;
+            if(!myName) return alert("Enter Username");
 
-            // Initialize PubNub with Demo Keys
+            // Connect to the Public Internet Engine
             pubnub = new PubNub({
                 publishKey: 'pub-c-49033379-3733-4f9e-873d-82b53b817861',
                 subscribeKey: 'sub-c-1f51079d-3893-4537-8141-995a97576f34',
-                uuid: myUser
+                uuid: myName
             });
 
-            pubnub.subscribe({ channels: ['friends_spot_global'] });
+            pubnub.subscribe({ channels: ['fs_global_v2'] });
+            pubnub.addListener({ message: (m) => render(m.message) });
 
-            pubnub.addListener({
-                message: function(m) {
-                    renderMsg(m.message);
-                }
-            });
-
-            if(myUser === 'huzaifa23' && pass === 'huzaifa23') {
-                document.getElementById('admin-tick').classList.remove('hidden');
+            // Admin Logic
+            if(myName === 'huzaifa23' && pass === 'huzaifa23') {
+                document.getElementById('admin-icon').classList.remove('hidden');
+                document.getElementById('p-status').innerHTML = "Administrator <i class='fas fa-check-circle text-blue-500'></i>";
             }
 
-            document.getElementById('edit-name').value = myUser;
-            document.getElementById('p-img').src = `https://ui-avatars.com/api/?name=${myUser}&background=random`;
+            document.getElementById('p-name').innerText = myName;
+            document.getElementById('p-img').src = `https://ui-avatars.com/api/?name=${myName}&background=random`;
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
         }
 
-        function publishMsg() {
-            const input = document.getElementById('chat-input');
-            if(!input.value) return;
-
+        function send() {
+            const inp = document.getElementById('chat-input');
+            if(!inp.value) return;
             pubnub.publish({
-                channel: 'friends_spot_global',
-                message: {
-                    sender: myUser,
-                    text: input.value,
-                    color: myUser === 'huzaifa23' ? 'blue' : 'black'
-                }
+                channel: 'fs_global_v2',
+                message: { user: myName, text: inp.value, admin: (myName === 'huzaifa23') }
             });
-            input.value = "";
+            inp.value = "";
         }
 
-        function renderMsg(data) {
+        function render(data) {
+            if(data.action === 'clear') { document.getElementById('chat-display').innerHTML = ""; return; }
             const display = document.getElementById('chat-display');
-            const isMe = data.sender === myUser;
-            
+            const isMe = data.user === myName;
             const div = document.createElement('div');
             div.className = `flex ${isMe ? 'justify-end' : 'justify-start'} w-full`;
-            
             div.innerHTML = `
-                <div class="msg-bubble ${isMe ? 'bg-black text-white rounded-tr-none' : 'bg-white text-slate-800 rounded-tl-none'}">
-                    <p class="text-[9px] font-bold uppercase opacity-50 mb-1">${data.sender}</p>
+                <div class="msg-bubble ${isMe ? 'bg-black text-white rounded-tr-none' : 'bg-white text-slate-800 rounded-tl-none border'}">
+                    <p class="text-[9px] font-bold uppercase opacity-50 mb-1">${data.user} ${data.admin ? '✓' : ''}</p>
                     <p class="font-medium">${data.text}</p>
                 </div>`;
-            
             display.appendChild(div);
             display.scrollTop = display.scrollHeight;
         }
@@ -132,6 +146,19 @@
             document.getElementById('screen-' + id).classList.add('active-screen');
             document.getElementById('n-' + id).classList.add('nav-active');
             document.getElementById('n-' + id).classList.remove('text-slate-300');
+        }
+
+        function uploadImg(e) {
+            const reader = new FileReader();
+            reader.onload = () => { document.getElementById('p-img').src = reader.result; };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+
+        function toggleAdmin() { document.getElementById('admin-panel').classList.toggle('hidden'); }
+
+        function clearChatServer() {
+            pubnub.publish({ channel: 'fs_global_v2', message: { action: 'clear' } });
+            toggleAdmin();
         }
     </script>
 </body>
