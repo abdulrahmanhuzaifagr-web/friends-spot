@@ -3,67 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friends Spot | Premium</title>
+    <title>Friends Spot | Official</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.4); }
-        .hidden { display: none !important; }
-        body { background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%); min-height: 100vh; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f0f2f5; }
+        .glass { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.5); }
+        .screen { display: none; }
+        .active-screen { display: block; animation: fadeIn 0.4s ease; }
+        .nav-active { color: #000; transform: scale(1.2); font-weight: 800; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="text-slate-900">
+<body class="text-slate-900 overflow-x-hidden">
 
-    <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-white/40 backdrop-blur-md p-6">
+    <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
         <div class="glass w-full max-w-sm p-10 rounded-[40px] shadow-2xl text-center">
-            <h1 class="text-4xl font-black italic mb-2">Friends Spot</h1>
-            <p class="text-[10px] tracking-[0.3em] font-bold text-slate-400 uppercase mb-8">Premium Network</p>
-            <div class="space-y-4">
-                <input id="user-input" type="text" placeholder="Username" class="w-full p-4 rounded-2xl bg-white/50 border-none outline-none shadow-inner">
-                <input id="pass-input" type="password" placeholder="Password" class="w-full p-4 rounded-2xl bg-white/50 border-none outline-none shadow-inner">
-                <button onclick="handleLogin()" class="w-full bg-black text-white font-bold py-4 rounded-2xl hover:scale-[1.02] transition shadow-xl mt-4">Login</button>
+            <h1 class="text-4xl font-extrabold italic tracking-tighter mb-2">Friends Spot</h1>
+            <p class="text-[10px] tracking-[0.3em] font-bold text-slate-400 uppercase mb-8">Official Network</p>
+            <div class="space-y-4 text-left">
+                <label class="text-xs font-bold ml-2 text-slate-500 uppercase">Username</label>
+                <input id="user-input" type="text" placeholder="Enter name..." class="w-full p-4 rounded-2xl bg-white/50 border-none outline-none shadow-sm focus:ring-2 ring-blue-400">
+                <label class="text-xs font-bold ml-2 text-slate-500 uppercase">Password (Admin only)</label>
+                <input id="pass-input" type="password" placeholder="••••••••" class="w-full p-4 rounded-2xl bg-white/50 border-none outline-none shadow-sm focus:ring-2 ring-blue-400">
+                <button onclick="startApp()" class="w-full bg-black text-white font-bold py-4 rounded-2xl hover:bg-slate-800 transition shadow-xl mt-4">Start Spotting</button>
             </div>
-            <p class="mt-4 text-[10px] text-gray-500">Admin: huzaifa23 | Pass: huzaifa23</p>
         </div>
     </div>
 
-    <div id="main-app" class="hidden min-h-screen flex flex-col pt-24 pb-32">
-        <nav class="fixed top-0 w-full glass z-40 px-8 py-5 flex justify-between items-center shadow-sm">
-            <h2 class="text-xl font-black italic">FS.</h2>
-            <div id="admin-icon" class="hidden text-red-500"><i class="fas fa-shield-alt"></i></div>
+    <div id="main-app" class="hidden min-h-screen flex flex-col">
+        
+        <nav class="fixed top-0 w-full glass z-40 px-8 py-5 flex justify-between items-center border-b border-white/50">
+            <h2 id="header-title" class="text-xl font-extrabold italic">FS.</h2>
+            <div id="admin-badge" class="hidden bg-red-100 text-red-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">Admin Access</div>
         </nav>
 
-        <div class="px-6 max-w-lg mx-auto w-full">
-            <div class="glass p-8 rounded-[35px] shadow-lg text-center">
-                <h3 class="text-2xl font-bold">Welcome, <span id="user-display"></span>!</h3>
-                <p class="mt-2 text-slate-500">You have successfully entered the Spot.</p>
+        <main id="screen-home" class="screen active-screen mt-24 px-6 pb-32 max-w-lg mx-auto w-full">
+            <div class="glass rounded-[35px] overflow-hidden shadow-lg mb-6">
+                <div class="p-6 flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-black flex items-center justify-center text-white font-bold text-xs">H</div>
+                        <span class="ml-3 font-bold text-sm">huzaifa23 <i class="fas fa-check-circle text-blue-500"></i></span>
+                    </div>
+                    <i class="fas fa-ellipsis-h text-slate-400"></i>
+                </div>
+                <div class="px-6 pb-8">
+                    <div class="w-full h-56 bg-slate-300 rounded-[25px] mb-4 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                        <p class="absolute bottom-4 left-4 text-white font-bold">New Version Live!</p>
+                    </div>
+                    <p class="text-sm text-slate-600 leading-relaxed font-medium">Welcome to the new era of Friends Spot. Premium design, three screens, and global access. Enjoy the vibe!</p>
+                </div>
             </div>
-        </div>
+        </main>
+
+        <main id="screen-chat" class="screen mt-24 px-6 pb-32 max-w-lg mx-auto w-full flex flex-col h-[75vh]">
+            <div id="chat-box" class="flex-1 overflow-y-auto space-y-4 p-2 pr-4">
+                <div class="flex justify-start">
+                    <div class="glass p-4 rounded-[25px] rounded-tl-none text-sm max-w-[80%] shadow-sm">
+                        Welcome to the Global Chat room! Start talking below.
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 flex items-center gap-2">
+                <input id="chat-input" type="text" placeholder="Message everyone..." class="glass flex-1 p-4 rounded-full outline-none text-sm shadow-md">
+                <button onclick="send()" class="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center shadow-lg"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </main>
+
+        <main id="screen-profile" class="screen mt-24 px-6 pb-32 max-w-lg mx-auto w-full text-center">
+            <div class="glass p-10 rounded-[40px] shadow-xl">
+                <div class="w-24 h-24 rounded-full mx-auto p-1 bg-gradient-to-tr from-blue-400 via-purple-500 to-pink-500 mb-4">
+                    <div id="profile-initial" class="w-full h-full rounded-full bg-white flex items-center justify-center text-3xl font-black">?</div>
+                </div>
+                <h3 id="profile-name" class="text-2xl font-black">Username</h3>
+                <p id="profile-status" class="text-[10px] text-slate-400 uppercase tracking-widest font-bold mt-1">Standard Member</p>
+                <div class="flex justify-around mt-8 border-t border-white/40 pt-8">
+                    <div><p class="text-xl font-black">24</p><p class="text-[10px] font-bold text-slate-400 uppercase">Posts</p></div>
+                    <div><p class="text-xl font-black">1.8k</p><p class="text-[10px] font-bold text-slate-400 uppercase">Friends</p></div>
+                </div>
+                <button onclick="location.reload()" class="mt-10 text-red-500 font-bold text-xs uppercase tracking-[0.2em]">Sign Out</button>
+            </div>
+        </main>
+
+        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-xs glass rounded-full p-4 flex justify-around items-center shadow-2xl z-50">
+            <i onclick="tab('home')" id="nav-home" class="fas fa-th-large text-xl cursor-pointer transition-all nav-active"></i>
+            <i onclick="tab('chat')" id="nav-chat" class="fas fa-comment-alt text-xl cursor-pointer text-slate-300 transition-all"></i>
+            <i onclick="tab('profile')" id="nav-profile" class="fas fa-user-circle text-xl cursor-pointer text-slate-300 transition-all"></i>
+        </nav>
     </div>
 
     <script>
-        function handleLogin() {
+        let userName = "";
+
+        function startApp() {
             const u = document.getElementById('user-input').value;
             const p = document.getElementById('pass-input').value;
 
-            if (u === "") {
-                alert("Please enter a username");
-                return;
+            if(!u) { alert("Please enter a name"); return; }
+            userName = u;
+            
+            // Set profile data
+            document.getElementById('profile-name').innerText = u;
+            document.getElementById('profile-initial').innerText = u.charAt(0).toUpperCase();
+
+            // Admin Logic
+            if(u === 'huzaifa23' && p === 'huzaifa23') {
+                document.getElementById('admin-badge').classList.remove('hidden');
+                document.getElementById('profile-status').innerHTML = "Administrator <i class='fas fa-check-circle text-blue-500'></i>";
             }
 
-            // Set the name on the main screen
-            document.getElementById('user-display').innerText = u;
-
-            // Check if it's the Admin
-            if (u === 'huzaifa23' && p === 'huzaifa23') {
-                document.getElementById('admin-icon').classList.remove('hidden');
-            }
-
-            // HIDE Login and SHOW App
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
+        }
+
+        function tab(id) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+            // Reset icons
+            document.querySelectorAll('nav i').forEach(i => i.classList.remove('nav-active', 'text-slate-300'));
+            document.querySelectorAll('nav i').forEach(i => i.classList.add('text-slate-300'));
+
+            // Show current
+            document.getElementById('screen-' + id).classList.add('active-screen');
+            document.getElementById('nav-' + id).classList.add('nav-active');
+            document.getElementById('nav-' + id).classList.remove('text-slate-300');
+            document.getElementById('header-title').innerText = id === 'home' ? 'FS.' : id.toUpperCase();
+        }
+
+        function send() {
+            const inp = document.getElementById('chat-input');
+            if(!inp.value) return;
+            const chatBox = document.getElementById('chat-box');
             
-            console.log("Logged in as:", u);
+            const msg = `
+                <div class="flex justify-end">
+                    <div class="bg-black text-white p-4 rounded-[25px] rounded-tr-none text-sm max-w-[85%] shadow-md">
+                        <p class="text-[10px] font-bold opacity-50 uppercase mb-1">${userName}</p>
+                        ${inp.value}
+                    </div>
+                </div>`;
+            
+            chatBox.innerHTML += msg;
+            inp.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
     </script>
 </body>
